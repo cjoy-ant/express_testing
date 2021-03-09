@@ -1,5 +1,12 @@
 const { expect } = require("chai");
 const supertest = require("supertest");
+// can also call supertest "request"
+// const request = require("supertest");
+// describe("Express App", () => {
+//  it("shoulder return a message from GET /", () => {
+//    return request(app).get("/").expect(200, "Hello Express!"
+//  });
+//});
 const app = require("../app");
 
 describe("Express App", () => {
