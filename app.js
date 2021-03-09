@@ -104,8 +104,62 @@ app.get("/midpoint", (req, res) => {
   });
 });
 
-// app.listen(8000, () => {
-// console.log('Server started on PORT 8000 http://localhost:8000/');
-// });
+/* DRILL
+Write an endpoint handler function GET /frequency that accepts a String s. 
+Count the frequency of occurrence of each character in the String, 
+the total number of distinct characters, the average frequency, 
+and the character with the highest frequency. 
+Return an object in the format:
+ {
+    count: 2,
+    average: 5,
+    highest: 'a',
+    'a': 6,
+    'b': 4
+  }
+Where the input may have been 'aaBBAAbbaa'. 
+Throw an error if the String is undefined. 
+If more than one characters tie for highest frequency 
+return the one closest to the beginning of the alphabet.
+*/
 
-module.exports = app;
+app.get("/frequency", (req, res) => {
+  const { s } = req.query;
+
+  if (!s) {
+    return res.status(400).send("Invalid request");
+  }
+
+  const counts = s
+    .toLowerCase()
+    .split("")
+    .reduce((acc, curr) => {
+      if (acc[curr]) {
+        acc[curr]++;
+      } else {
+        acc[curr] = 1;
+      }
+      return acc;
+    }, {});
+
+  const unique = Object.keys(counts).length;
+  const average = s.length / unique;
+  let highest = "";
+  let highestVal = 0;
+
+  Object.keys(counts).forEach((k) => {
+    if (counts[k] > highestVal) {
+      highestVal = counts[k];
+      highest = k;
+    }
+  });
+
+  counts.unique = unique;
+  counts.average = average;
+  counts.highest = highest;
+  res.json(counts);
+});
+
+app.listen(8000, () => {
+  console.log("Server started on PORT 8000 http://localhost:8000/");
+});
